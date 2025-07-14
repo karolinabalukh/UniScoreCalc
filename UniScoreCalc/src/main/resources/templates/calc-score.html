@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Розрахунок конкурсного бала</title>
+</head>
+<body>
+
+<h1>📊 Розрахунок конкурсного бала</h1>
+
+<form id="scoreForm">
+    <label>Оберіть спеціальність:</label>
+    <select name="specialtyId" id="specialtySelect" required>
+        <option value="" disabled selected>-- Оберіть спеціальність --</option>
+        <option th:each="s : ${specialtyCoefficients}"
+                th:value="${s.id}"
+                th:text="${s.name}"></option>
+    </select><br><br>
+
+    <div id="subjectsArea"></div>
+
+    <button type="submit">Розрахувати</button>
+</form>
+
+<div id="result" style="margin-top: 20px; font-weight: bold;"></div>
+
+<script>
+    const specialtySelect = document.getElementById('specialtySelect');
+    const subjectsArea = document.getElementById('subjectsArea');
+
+    specialtySelect.addEventListener('change', function () {
+        const specialtyId = this.value;
+        if (!specialtyId) return;
+
+        fetch('/get-coefs/' + specialtyId)
+            .then(res => res.json())
+            .then(coefs => {
+                subjectsArea.innerHTML = ''; // Очистити попередні поля
+
+                for (const [subject, coef] of Object.entries(coefs)) {
+                    subjectsArea.innerHTML += `
+                        <div style="margin-bottom: 8px;">
+                            <label>${getSubjectName(subject)} (коеф. ${coef}):</label>
+                            <input type="number" step="0.1" name="${subject}" placeholder="Ваш бал, якщо складали">
+                        </div>
+                    `;
+                }
+            });
+    });
+
+    // Назви предметів для відображення
+    function getSubjectName(code) {
+        const names = {
+            "ukr_mova": "Українська мова",
+            "math": "Математика",
+            "history": "Історія України",
+            "language": "Іноземна мова",
+            "biology": "Біологія",
+            "physics": "Фізика",
+            "chemistry": "Хімія",
+            "literature": "Українська література",
+            "geography": "Географія"
+        };
+        return names[code] || code;
+    }
+
+    document.getElementById('scoreForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const specialtyId = specialtySelect.value;
+        const inputs = document.querySelectorAll('#subjectsArea input');
+        const subjectScores = {};
+
+        inputs.forEach(input => {
+            const value = parseFloat(input.value);
+            if (!isNaN(value)) {
+                subjectScores[input.name] = value;
+            }
+        });
+
+        if (Object.keys(subjectScores).length !== 4) {
+            alert("Будь ласка, введіть рівно 4 предмети, які ви складали.");
+            return;
+        }
+
+        const payload = {
+            specialtyId: parseInt(specialtyId),
+            subjectScores: subjectScores
+        };
+
+        fetch('/calc-score', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        })
+            .then(res => res.text())
+            .then(score => {
+                const parsed = parseFloat(score);
+                if (!isNaN(parsed)) {
+                    document.getElementById('result').innerText = '✅ Ваш конкурсний бал: ' + parsed.toFixed(2);
+                } else {
+                    document.getElementById('result').innerText = '❌ Сервер повернув не число';
+                }
+            })
+            .catch(() => {
+                document.getElementById('result').innerText = '⚠️ Помилка при розрахунку';
+            });
+    });
+</script>
+
+</body>
+</html>
