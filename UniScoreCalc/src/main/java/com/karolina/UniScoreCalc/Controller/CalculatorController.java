@@ -22,9 +22,15 @@ public class CalculatorController {
     private ScoreService Sservice;
 
     @GetMapping("/")
-    public String showTable(Model model) {
+    public String home(Model model) {
         model.addAttribute("specialtyCoefficients", Srepository.findAll());
         return "index";
+    }
+
+    @GetMapping("/table")
+    public String showTable(Model model) {
+        model.addAttribute("specialtyCoefficients", Srepository.findAll());
+        return "table";
     }
 
     @GetMapping("/calc-score")

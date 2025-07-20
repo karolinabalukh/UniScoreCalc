@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Конкурсний бал — спеціальності</title>
+  <link rel="stylesheet">
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+
+<h1>📋 Таблиця спеціальностей та коефіцієнтів</h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>Код</th>
+    <th>Назва спеціальності</th>
+    <th>Укр. мова</th>
+    <th>Математика</th>
+    <th>Історія</th>
+    <th>Іноземна</th>
+    <th>Біологія</th>
+    <th>Фізика</th>
+    <th>Хімія</th>
+    <th>Література</th>
+    <th>Географія</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="s : ${specialtyCoefficients}">
+    <td th:text="${s.code}"></td>
+    <td th:text="${s.name}"></td>
+    <td th:text="${s.ukr_mova}"></td>
+    <td th:text="${s.math}"></td>
+    <td th:text="${s.history}"></td>
+    <td th:text="${s.language}"></td>
+    <td th:text="${s.biology}"></td>
+    <td th:text="${s.physics}"></td>
+    <td th:text="${s.chemistry}"></td>
+    <td th:text="${s.literature}"></td>
+    <td th:text="${s.geography}"></td>
+  </tr>
+
+  </tbody>
+</table>
+
+</body>
+</html>
