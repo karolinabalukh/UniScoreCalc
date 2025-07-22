@@ -65,4 +65,6 @@ public class CalculatorController {
     public double calculate(@RequestBody ScoreInput inp) {
         return Sservice.calculateScoreDynamic(inp.getSpecialtyId(), inp.getSubjectScores());
     }
+
+
 }

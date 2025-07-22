@@ -1,28 +1,86 @@
 <!DOCTYPE html>
-<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Розрахунок конкурсного бала</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор вступних балів</title>
+    <link rel="icon" href="/images/logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script th:src="@{/js/scoreInput.js}" defer></script>
+    <link rel="stylesheet" th:href="@{/css/calc.css}">
 </head>
+
+<header class="main-header">
+    <div class="container">
+        <div class="logo">UNIscore</div>
+        <nav class="main-nav">
+            <a href="/">Головна</a>
+            <a href="/table">Таблиця коефіцієнтів</a>
+            <a href="/calc-score">Розрахувати бал</a>
+        </nav>
+    </div>
+</header>
+
 <body>
+<h1>Калькулятор вступних балів</h1>
 
-<h1>📊 Розрахунок конкурсного бала</h1>
+<div class="main-container">
+    <div class="form-group">
+        <label for="specialty">Спеціальність:</label>
+        <select id="specialty" th:onchange="loadCoefficients()">
+            <option value="">Оберіть спеціальність</option>
+            <option th:each="spec : ${specialtyCoefficients}"
+                    th:value="${spec.id}"
+                    th:text="${spec.name}"></option>
+        </select>
+    </div>
 
-<form id="scoreForm">
-    <label>Оберіть спеціальність:</label>
-    <select name="specialtyId" id="specialtySelect" required>
-        <option value="" disabled selected>-- Оберіть спеціальність --</option>
-        <option th:each="s : ${specialtyCoefficients}"
-                th:value="${s.id}"
-                th:text="${s.name}"></option>
-    </select><br><br>
+    <h3>Обов'язкові предмети:</h3>
 
-    <div id="subjectsArea"></div>
+    <div class="form-group">
+        <label for="ukr_mova">Українська мова:</label>
+        <input type="number" id="ukr_mova" min="100" max="200" step="1" placeholder="Введіть бал (100-200)">
+        <span id="ukr_mova_coef" class="coefficient"></span>
+    </div>
 
-    <button type="submit">Розрахувати</button>
-</form>
+    <div class="form-group">
+        <label for="math">Математика:</label>
+        <input type="number" id="math" min="100" max="200" step="1" placeholder="Введіть бал (100-200)">
+        <span id="math_coef" class="coefficient"></span>
+    </div>
 
-<div id="result" style="margin-top: 20px; font-weight: bold;"></div>
+    <div class="form-group">
+        <label for="history">Історія України:</label>
+        <input type="number" id="history" min="100" max="200" step="1" placeholder="Введіть бал (100-200)">
+        <span id="history_coef" class="coefficient"></span>
+    </div>
+
+    <h3>Додатковий предмет (оберіть один):</h3>
+
+    <div class="form-group">
+        <label for="additionalSubject">Предмет:</label>
+        <select id="additionalSubject" th:onchange="updateAdditionalSubjectInput()">
+            <option value="">Оберіть предмет:</option>
+            <option value="physics">Фізика</option>
+            <option value="language">Іноземна мова</option>
+            <option value="biology">Біологія</option>
+            <option value="chemistry">Хімія</option>
+            <option value="literature">Українська література</option>
+            <option value="geography">Географія</option>
+        </select>
+    </div>
+
+    <div class="form-group" id="additionalSubjectInputContainer" style="display: none;">
+        <label id="additionalSubjectLabel">Додатковий предмет:</label>
+        <input type="number" id="additionalSubjectScore" min="100" max="200" step="1" placeholder="Введіть бал (100-200)">
+        <span id="additionalSubject_coef" class="coefficient"></span>
+    </div>
+
+    <button type="button" onclick="calculateScore()">Розрахувати</button>
+
+    <div id="result" class="result" style="display: none;"></div>
+</div>
 
 </body>
 </html>

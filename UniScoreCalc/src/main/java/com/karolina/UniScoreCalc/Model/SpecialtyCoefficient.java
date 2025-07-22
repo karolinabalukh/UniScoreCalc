@@ -31,7 +31,6 @@ public class SpecialtyCoefficient {
 
 
 
-
     public Long getId() {
         return id;
     }

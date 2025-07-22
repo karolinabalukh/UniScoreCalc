@@ -102,7 +102,6 @@ body {
     box-shadow: 0 7px 20px rgba(1, 29, 107, 0.6);
 }
 
-/* Features Section */
 .features {
     padding: 80px 20px;
     background-color: #f9f9f9;
@@ -156,7 +155,7 @@ body {
     line-height: 1.6;
 }
 
-/* Popular Specialties Section */
+
 .popular-specialties {
     padding: 80px 20px;
     background: linear-gradient(to right, #f5f7fa, #e4e8eb);
@@ -215,13 +214,11 @@ body {
     background: linear-gradient(135deg, #f8f9fa, #ffffff);
 }
 
-/* Анімації */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Адаптивність */
 @media (max-width: 768px) {
     .features .container {
         flex-direction: column;
